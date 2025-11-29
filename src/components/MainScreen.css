@@ -60,3 +60,17 @@
 .recalibrate-btn:active {
   transform: scale(0.97);
 }
+
+/* 🔹 New horizontal row for Pomodoro, Ambient Sounds, Spotify */
+.section-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-bottom: 25px;
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+.section-row .section {
+  flex: 1; /* all three sections have equal width */
+}
