@@ -32,7 +32,6 @@ def eye_aspect_ratio(landmarks, eye_points, image_w, image_h):
 def is_blinking(ear, threshold=0.2):
     return ear < threshold
 
-# ✅ MODIFIED: Continuous head pose score (0.0 to 1.0)
 def get_head_pose_score(landmarks, image_w, image_h):
     nose = landmarks[1]
     x, y = nose.x * image_w, nose.y * image_h
@@ -46,7 +45,6 @@ def get_head_pose_score(landmarks, image_w, image_h):
     score = (score_x + score_y) / 2
     return round(score, 2)
 
-# ✅ MODIFIED: Continuous gaze score (0.0 to 1.0)
 def get_gaze_score(landmarks, image_w, image_h):
     left_iris = landmarks[468]
     right_iris = landmarks[473]
@@ -129,7 +127,7 @@ while True:
             }
 
             # Save to JSON file
-            with open("state_eye.json", "w") as f:
+            with open("./database/state_eye.json", "w") as f:
                 json.dump(state, f, indent=4)
 
 

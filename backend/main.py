@@ -171,15 +171,15 @@ cap: dict = {
  7: "O2",
 }
 
-focus_df = pd.read_csv("./calibration_data/focus_metrics_output.csv")
-relax_df = pd.read_csv("./calibration_data/open_eyes_metrics_output.csv")
-closed_eyes_df = pd.read_csv("./calibration_data/closed_eyes_metrics_output.csv")
+focus_df = pd.read_csv("./database/configuration_files/focus_metrics_output.csv")
+relax_df = pd.read_csv("./database/configuration_files/open_eyes_metrics_output.csv")
+closed_eyes_df = pd.read_csv("./database/configuration_files/closed_eyes_metrics_output.csv")
 
 FOCUS_coeff = extract_coefficient_to_vector(focus_df)
 RELAX_coeff = extract_coefficient_to_vector(relax_df)
 CLOSED_coeff = extract_coefficient_to_vector(closed_eyes_df)
 
-save_name = f'data/{time.strftime("%Y%m%d_%H%M")}-raw.csv'
+# save_name = f'database/{time.strftime("%Y%m%d_%H%M")}-raw.csv'
 
 distraction_counter = 0
 
@@ -299,7 +299,7 @@ if __name__ == "__main__":
                 }
 
                 # Save to JSON file
-                with open("state.json", "w") as f:
+                with open("./database/state.json", "w") as f:
                     json.dump(state, f, indent=4)
 
 
