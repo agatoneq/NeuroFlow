@@ -8,9 +8,9 @@ import MusicPlayerSpotify from "./MusicPlayerSpotify";
 function MainScreen({ focusScore, onRecalibrate }) {
   const [brainState, setBrainState] = useState(null);
   const lastInterventionRef = useRef(0);
-  const flipRef = useRef(0);  // 0 → typ 1, 1 → typ 2
+  const flipRef = useRef(0); // 0 → typ 1, 1 → typ 2
 
-  // 🔥 Pobieranie aktualnego stanu co 3 sekundy
+  // 🔥 Fetch brain state every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/state.json?ts=" + Date.now())
@@ -22,17 +22,16 @@ function MainScreen({ focusScore, onRecalibrate }) {
     return () => clearInterval(interval);
   }, []);
 
-  // 💥 System mikrointerwencji
+  // 💥 Micro-intervention system
   useEffect(() => {
     if (!brainState) return;
 
     const now = Date.now();
-    const MIN_DELAY = 15000; // 15 sekund
+    const MIN_DELAY = 15000; // 15 seconds
 
-    // warunek czy wykonujemy interwencję
+    // condition to trigger intervention
     if (brainState.eye === 0 && now - lastInterventionRef.current > MIN_DELAY) {
-
-      lastInterventionRef.current = now; // blokada spamu
+      lastInterventionRef.current = now; // spam lock
 
       if (flipRef.current === 0) {
         showNotification("Hej! Wracamy do zadania.");
@@ -44,7 +43,7 @@ function MainScreen({ focusScore, onRecalibrate }) {
     }
   }, [brainState]);
 
-  // 🔔 Notyfikacja (native browser or fallback)
+  // 🔔 Notification (browser or fallback)
   const showNotification = (msg) => {
     if (Notification.permission === "granted") {
       new Notification("NeuroFocus", { body: msg });
@@ -55,17 +54,17 @@ function MainScreen({ focusScore, onRecalibrate }) {
 
   return (
     <div className="main-screen">
-
       <button className="recalibrate-btn" onClick={onRecalibrate}>
         Recalibrate
       </button>
 
+      {/* Focus Level Section */}
       <div className="section">
         <h2>Focus Level</h2>
         <FocusBar score={focusScore} />
       </div>
 
-      {/* ⬇ Horizontal row for these three sections */}
+      {/* Horizontal row: Pomodoro, Ambient Sounds, Spotify */}
       <div className="section-row">
         <div className="section">
           <h2>Pomodoro</h2>
@@ -82,7 +81,6 @@ function MainScreen({ focusScore, onRecalibrate }) {
           <MusicPlayerSpotify />
         </div>
       </div>
-
     </div>
   );
 }
