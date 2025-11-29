@@ -1,0 +1,111 @@
+.pomodoro-timer {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+.mode-selector {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #eee;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 11px;
+  flex: 1;
+  min-width: 80px;
+}
+
+.mode-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+  border-color: #00d4ff;
+}
+
+.mode-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timer-display {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 15px;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+  width: 200px;
+  height: 200px;
+}
+
+.progress-ring-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 6;
+}
+
+.progress-ring-circle {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+  stroke: #00d4ff;
+}
+
+.timer-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.timer-time {
+  font-size: 48px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #00d4ff;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.timer-mode {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.timer-controls .btn {
+  min-width: 100px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.sessions-completed {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  margin-top: 10px;
+}

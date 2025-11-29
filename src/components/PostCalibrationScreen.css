@@ -1,0 +1,63 @@
+.postcal-screen {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #001020 0%, #000814 100%);
+  color: #fff;
+  padding: 20px;
+}
+
+.postcal-card {
+  text-align: center;
+  padding: 40px 50px;
+  max-width: 520px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+}
+
+.postcal-title {
+  font-size: 38px;
+  font-weight: 700;
+  color: #00d4ff;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  margin-bottom: 15px;
+}
+
+.postcal-text {
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.postcal-slogan {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #00d4ff;
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+.postcal-btn {
+  padding: 14px 22px;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #001020;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.postcal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 22px rgba(0, 212, 255, 0.6);
+}

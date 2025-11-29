@@ -1,0 +1,20 @@
+# Ustaw index.html jako domyślny plik
+DirectoryIndex index.html
+
+# Włącz HTTPS (jeśli jeszcze nie jest włączone)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Zezwól na Cross-Origin Resource Sharing (CORS)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+# Cache dla szybszego ładowania
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 1 hour"
+</IfModule>
