@@ -1,33 +1,25 @@
 import React from 'react';
 import './FocusBar.css';
 
-function FocusBar({ focusScore }) {
-  const level =
-    focusScore >= 70 ? 'good' :
-    focusScore >= 40 ? 'medium' :
-    'low';
+function FocusBar({ score }) {
+  const getColor = () => {
+    if (score >= 60) return '#00ff88';     // green
+    if (score >= 40) return '#ffaa00';     // yellow
+    return '#ff4b2b';                      // red
+  };
 
-  const label =
-    level === 'good' ? 'Focused' :
-    level === 'medium' ? 'Slightly distracted' :
-    'Overloaded – time for a break';
+  const getLabel = () => {
+    if (score >= 60) return 'Focused';
+    if (score >= 40) return 'Distracted';
+    return 'Unfocused';
+  };
 
   return (
-    <div className="focusbar-wrapper">
-      <div className="focusbar-header">
-        <span className="focusbar-title">Brain Focus Level</span>
-        <span className={`focusbar-label ${level}`}>{label}</span>
-      </div>
+    <div className="focusbar-container">
+      <div className="focusbar-bar" style={{ background: getColor() }}></div>
 
-      <div className="focusbar-track">
-        <div
-          className={`focusbar-fill ${level}`}
-          style={{ width: `${Math.max(0, Math.min(focusScore, 100))}%` }}
-        />
-      </div>
-
-      <div className="focusbar-score">
-        {Math.round(focusScore)}%
+      <div className="focusbar-label">
+        {getLabel()}
       </div>
     </div>
   );

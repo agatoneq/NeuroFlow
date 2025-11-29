@@ -1,80 +1,18 @@
-.focusbar-wrapper {
+.focusbar-container {
   width: 100%;
-  max-width: 900px;
-  margin: 10px auto 20px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  margin: 10px 0 16px 0;
 }
 
-.focusbar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.focusbar-title {
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+.focusbar-bar {
+  height: 16px;
+  border-radius: 10px;
+  transition: background 0.3s ease;
 }
 
 .focusbar-label {
-  font-size: 13px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.focusbar-label.good {
-  background: rgba(0, 255, 153, 0.15);
-  color: #00ff99;
-}
-
-.focusbar-label.medium {
-  background: rgba(240, 216, 0, 0.18);
-  color: #f0d800;
-}
-
-.focusbar-label.low {
-  background: rgba(255, 0, 51, 0.18);
-  color: #ff3355;
-}
-
-.focusbar-track {
-  position: relative;
-  width: 100%;
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-
-.focusbar-fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.3s ease, background 0.3s ease;
-}
-
-.focusbar-fill.good {
-  background: linear-gradient(90deg, #00ff99, #00d4ff);
-}
-
-.focusbar-fill.medium {
-  background: linear-gradient(90deg, #f0d800, #ffb400);
-}
-
-.focusbar-fill.low {
-  background: linear-gradient(90deg, #ff3355, #ff0066);
-}
-
-.focusbar-score {
   margin-top: 6px;
-  font-size: 13px;
-  text-align: right;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: rgba(255,255,255,0.9);
 }

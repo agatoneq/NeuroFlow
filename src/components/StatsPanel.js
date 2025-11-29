@@ -1,44 +1,90 @@
 import React from 'react';
-import './StartScreen.css';
+import './StatsPanel.css';
 
-function StartScreen({ onStart }) {
+function StatsPanel({ stats }) {
+  const formatTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+  };
+
   return (
-    <div className="start-screen">
-      <div className="start-card">
-        <h1 className="title">NeuroFocus</h1>
-        <p className="subtitle">Prepare your EEG headset</p>
+    <div className="stats-panel card">
+      <h3 className="card-title">📊 Statistics</h3>
 
-        <div className="instructions">
-          <h3 className="instructions-title">Calibration steps:</h3>
-
-          <ul className="instructions-list">
-            <li>
-              <span className="number">1</span>
-              For the first <strong>60 seconds</strong>, close your eyes and relax.
-            </li>
-
-            <li>
-              <span className="number">2</span>
-              For the next <strong>60 seconds</strong>, keep your eyes open and try not to think.
-            </li>
-
-            <li>
-              <span className="number">3</span>
-              For the final <strong>60 seconds</strong>, stay focused and solve simple tasks.
-            </li>
-          </ul>
+      <div className="stats-grid">
+        <div className="stat-item">
+          <div className="stat-icon">⏱️</div>
+          <div className="stat-content">
+            <div className="stat-value">{formatTime(stats.totalFocusTime)}</div>
+            <div className="stat-label">Focus Time</div>
+          </div>
         </div>
 
-        <button className="start-btn" onClick={onStart}>
-          Start Calibration
-        </button>
+        <div className="stat-item">
+          <div className="stat-icon">🍅</div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.pomodorosCompleted}</div>
+            <div className="stat-label">Completed Pomodoros</div>
+          </div>
+        </div>
 
-        <p className="footer-info">
-          Total time: <strong>3 minutes</strong>
-        </p>
+        <div className="stat-item">
+          <div className="stat-icon">📈</div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.averageFocus}%</div>
+            <div className="stat-label">Average Focus</div>
+          </div>
+        </div>
+
+        <div className="stat-item">
+          <div className="stat-icon">🎯</div>
+          <div className="stat-content">
+            <div className="stat-value">
+              {stats.pomodorosCompleted > 0
+                ? Math.round(stats.totalFocusTime / stats.pomodorosCompleted)
+                : 0}
+              m
+            </div>
+            <div className="stat-label">Avg Session Length</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="daily-goal">
+        <div className="goal-header">
+          <span>Daily Goal</span>
+          <span className="goal-progress-text">
+            {stats.pomodorosCompleted}/8 🍅
+          </span>
+        </div>
+        <div className="goal-bar">
+          <div
+            className="goal-fill"
+            style={{ width: `${Math.min((stats.pomodorosCompleted / 8) * 100, 100)}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="achievements">
+        <div className="achievement-title">🏆 Achievements</div>
+        <div className="achievement-list">
+          {stats.pomodorosCompleted >= 1 && (
+            <div className="achievement">✅ First Pomodoro</div>
+          )}
+          {stats.pomodorosCompleted >= 4 && (
+            <div className="achievement">🔥 4 Sessions in a Row</div>
+          )}
+          {stats.totalFocusTime >= 60 && (
+            <div className="achievement">⭐ One Hour of Focus</div>
+          )}
+          {stats.averageFocus >= 80 && (
+            <div className="achievement">🎯 Focus Master</div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-export default StartScreen;
+export default StatsPanel;
