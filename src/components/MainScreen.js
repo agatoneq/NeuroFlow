@@ -65,19 +65,22 @@ function MainScreen({ focusScore, onRecalibrate }) {
         <FocusBar score={focusScore} />
       </div>
 
-      <div className="section">
-        <h2>Pomodoro</h2>
-        <PomodoroTimer lockWhenDistracted={focusScore < 40} />
-      </div>
+      {/* ⬇ Horizontal row for these three sections */}
+      <div className="section-row">
+        <div className="section">
+          <h2>Pomodoro</h2>
+          <PomodoroTimer lockWhenDistracted={focusScore < 40} />
+        </div>
 
-      <div className="section">
-        <h2>Ambient Sounds</h2>
-        <AmbientSounds />
-      </div>
+        <div className="section">
+          <h2>Ambient Sounds</h2>
+          <AmbientSounds />
+        </div>
 
-      <div className="section">
-        <h2>Spotify Player</h2>
-        <MusicPlayerSpotify />
+        <div className="section">
+          <h2>Spotify Player</h2>
+          <MusicPlayerSpotify />
+        </div>
       </div>
 
     </div>
