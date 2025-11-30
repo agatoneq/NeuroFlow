@@ -1,19 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./DeepIntervention.css";
 
 function DeepIntervention({ active }) {
+  const [phase, setPhase] = useState("inhale"); 
+  const [timer, setTimer] = useState(4);
+
+  useEffect(() => {
+    if (!active) return;
+    let interval = setInterval(() => {
+      setTimer(prev => {
+        if (prev === 1) {
+          setPhase(p => {
+            if (p === "inhale") return "hold";
+            if (p === "hold") return "exhale";
+            return "inhale";
+          });
+          return 4;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [active]);
+
   if (!active) return null;
 
   return (
     <div className="intervention-overlay">
       <div className="intervention-box">
 
-        <h1 className="intervention-title">
-          You need a reset 🧘‍♀️
-        </h1>
+        <h1 className="intervention-title">Deep reset 🧘‍♀️</h1>
 
         <p className="intervention-text">
-          You are exhausted. Take 60 seconds to breathe and reset your mind.
+          Oddychaj razem z kotem. To 60 sekund pełnego resetu.
         </p>
 
         <div className="cat-wrapper">
@@ -27,9 +47,18 @@ function DeepIntervention({ active }) {
           />
         </div>
 
-        <p className="breathing-guide">
-          Inhale 4s – Hold 4s – Exhale 4s
+        <p className="breathing-phase">
+          {phase === "inhale" && "Wdech 4s"}
+          {phase === "hold" && "Zatrzymaj 4s"}
+          {phase === "exhale" && "Wydech 4s"}
         </p>
+
+        <div className="breathing-progress">
+          <div
+            className="breathing-progress-fill"
+            style={{ width: `${(timer / 4) * 100}%` }}
+          ></div>
+        </div>
 
       </div>
     </div>
