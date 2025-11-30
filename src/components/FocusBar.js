@@ -1,26 +1,28 @@
-import React from 'react';
-import './FocusBar.css';
+import React from "react";
+import "./FocusBar.css";
 
-function FocusBar({ score }) {
-  const getColor = () => {
-    if (score >= 60) return '#00ff88';     // green
-    if (score >= 40) return '#ffaa00';     // yellow
-    return '#ff4b2b';                      // red
-  };
+function FocusBar({ eeg }) {
+  let color = "#00ff88";
+  let text = "High Focus";
 
-  const getLabel = () => {
-    if (score >= 60) return 'Focused';
-    if (score >= 40) return 'Distracted';
-    return 'Unfocused';
-  };
+  if (eeg === -1) {
+    color = "#ff3b3b";
+    text = "Low Focus";
+  } else if (eeg === 0) {
+    color = "#ffcc00";
+    text = "Medium Focus";
+  } else if (eeg === 1) {
+    color = "#00ff88";
+    text = "High Focus";
+  } else {
+    color = "#555";
+    text = "Waiting for data...";
+  }
 
   return (
     <div className="focusbar-container">
-      <div className="focusbar-bar" style={{ background: getColor() }}></div>
-
-      <div className="focusbar-label">
-        {getLabel()}
-      </div>
+      <div className="focusbar-bar" style={{ background: color }} />
+      <div className="focusbar-label">{text}</div>
     </div>
   );
 }

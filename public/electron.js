@@ -55,6 +55,11 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
+  // ⭐️ JEDYNA ZMIANA JAKĄ MUSIAŁAŚ MIEĆ ⭐️
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.executeJavaScript(`window.IS_ELECTRON = true;`);
+  });
+
   mainWindow.on('close', (event) => {
     if (!app.isQuitting) {
       event.preventDefault();
@@ -79,18 +84,15 @@ function createWindow() {
 
 function createTray() {
   tray = new Tray(path.join(__dirname, 'icon.png'));
+
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Pokaż aplikację',
-      click: () => {
-        mainWindow.show();
-      }
+      click: () => mainWindow.show()
     },
     {
       label: 'Pauza Pomodoro',
-      click: () => {
-        mainWindow.webContents.send('toggle-pomodoro');
-      }
+      click: () => mainWindow.webContents.send('toggle-pomodoro')
     },
     { type: 'separator' },
     {
@@ -106,18 +108,16 @@ function createTray() {
   tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
-    } else {
+    if (mainWindow.isVisible()) mainWindow.hide();
+    else {
       mainWindow.show();
       mainWindow.focus();
     }
   });
 
   tray.on('double-click', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
-    } else {
+    if (mainWindow.isVisible()) mainWindow.hide();
+    else {
       mainWindow.show();
       mainWindow.focus();
     }

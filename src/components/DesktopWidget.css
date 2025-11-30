@@ -1,0 +1,40 @@
+.widget {
+  width: 300px;
+  height: 380px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.widget-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  color: #00d4ff;
+  margin-bottom: 15px;
+}
+
+.widget-section {
+  margin-bottom: 20px;
+}
+
+.widget-section h4 {
+  margin-bottom: 8px;
+  color: #00d4ff;
+  font-size: 15px;
+}
+
+.widget-message {
+  margin-top: auto;
+  background: rgba(255,255,255,0.1);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  text-align: center;
+}

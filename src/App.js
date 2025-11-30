@@ -9,6 +9,8 @@ import MainScreen from './components/MainScreen';
 import BreathingExercise from './components/BreathingExercise';
 
 function App() {
+  const isElectron = window.IS_ELECTRON === true;
+
   const [started, setStarted] = useState(false);
   const [calibrationDone, setCalibrationDone] = useState(false);
   const [showPostCalibration, setShowPostCalibration] = useState(false);
@@ -37,6 +39,21 @@ function App() {
     }));
   };
 
+  // *** ELECTRON MODE ***
+  if (isElectron) {
+    return (
+      <div className="App">
+        <MainScreen
+          isCompact={true}
+          focusScore={focusScore}
+          onRecalibrate={() => {}}
+          stats={stats}
+        />
+      </div>
+    );
+  }
+
+  // *** WEB MODE ***
   if (!started) {
     return <StartScreen onStart={() => setStarted(true)} />;
   }

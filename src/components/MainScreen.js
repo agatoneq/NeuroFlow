@@ -5,45 +5,66 @@ import PomodoroTimer from "./PomodoroTimer";
 import AmbientSounds from "./AmbientSounds";
 import MusicPlayerSpotify from "./MusicPlayerSpotify";
 
-function MainScreen({ focusScore, onRecalibrate }) {
-  const [brainState, setBrainState] = useState(null);
-  const lastInterventionRef = useRef(0);
-  const flipRef = useRef(0); // 0 → typ 1, 1 → typ 2
+function MainScreen({ onRecalibrate }) {
+  const [brainData, setBrainData] = useState({ eeg: 1 });
+  const [eyeState, setEyeState] = useState({ eye: 1 });
 
-  // 🔥 Fetch brain state every 3 seconds
+  const lastIntervention = useRef(0);
+  const flip = useRef(0);
+
+  useEffect(() => {
+    Notification.requestPermission();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://localhost:3001/state.json?ts=" + Date.now())
-        .then((res) => res.json())
-        .then((data) => setBrainState(data))
+      fetch("http://localhost:3001/state.json?ts=" + Date.now(), {
+        cache: "no-store"
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("FETCH EEG RAW:", data);
+          setBrainData({ ...data });   // wymusza re-render ALWAYS
+        })
         .catch(() => {});
-    }, 3000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);
 
-  // 💥 Micro-intervention system
   useEffect(() => {
-    if (!brainState) return;
+    const interval = setInterval(() => {
+      fetch("http://localhost:3001/state_eye.json?ts=" + Date.now(), {
+        cache: "no-store"
+      })
+        .then(res => res.json())
+        .then(data => {
+          setEyeState({ ...data }); // wymusza re-render ALWAYS
+        })
+        .catch(() => {});
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!eyeState) return;
 
     const now = Date.now();
-    const MIN_DELAY = 15000; // 15 seconds
 
-    // condition to trigger intervention
-    if (brainState.eye === 0 && now - lastInterventionRef.current > MIN_DELAY) {
-      lastInterventionRef.current = now; // spam lock
+    if (eyeState.eye === 0 && now - lastIntervention.current >= 5000) {
+      lastIntervention.current = now;
 
-      if (flipRef.current === 0) {
-        showNotification("Hej! Wracamy do zadania.");
-        flipRef.current = 1;
+      if (flip.current === 0) {
+        showNotification("Hey! Let's get back to the task 👀");
+        flip.current = 1;
       } else {
-        showNotification("Odpływasz. Spójrz na daleki obiekt na 20 sekund.");
-        flipRef.current = 0;
+        showNotification("You're drifting. Look at a distant object for 20 seconds.");
+        flip.current = 0;
       }
     }
-  }, [brainState]);
+  }, [eyeState]);
 
-  // 🔔 Notification (browser or fallback)
   const showNotification = (msg) => {
     if (Notification.permission === "granted") {
       new Notification("NeuroFocus", { body: msg });
@@ -58,17 +79,15 @@ function MainScreen({ focusScore, onRecalibrate }) {
         Recalibrate
       </button>
 
-      {/* Focus Level Section */}
       <div className="section">
         <h2>Focus Level</h2>
-        <FocusBar score={focusScore} />
+        <FocusBar eeg={brainData.eeg} />
       </div>
 
-      {/* Horizontal row: Pomodoro, Ambient Sounds, Spotify */}
       <div className="section-row">
         <div className="section">
           <h2>Pomodoro</h2>
-          <PomodoroTimer lockWhenDistracted={focusScore < 40} />
+          <PomodoroTimer lockWhenDistracted={brainData.eeg === -1} />
         </div>
 
         <div className="section">

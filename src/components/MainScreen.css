@@ -1,13 +1,11 @@
-/* Main container */
 .main-screen {
   width: 100%;
-  max-width: 100%; /* full screen width */
+  max-width: 100%;
   margin: 0 auto;
   padding: 40px 20px;
   text-align: center;
 }
 
-/* Recalibrate button */
 .recalibrate-btn {
   background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
   padding: 14px 26px;
@@ -34,7 +32,6 @@
   transform: scale(0.97);
 }
 
-/* Single section style */
 .section {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -49,22 +46,20 @@
   margin-bottom: 15px;
 }
 
-/* Horizontal row for Pomodoro, Ambient Sounds, Spotify */
 .section-row {
   display: flex;
-  gap: 20px;              /* space between sections */
+  gap: 20px;
   justify-content: space-between;
   align-items: stretch;
-  width: 100%;            /* full width */
+  width: 100%;
 }
 
-/* Each section in the row takes equal width */
 .section-row .section {
   flex: 1;
-  min-width: 0;           /* prevent overflow */
+  min-width: 0;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* subtle card effect */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }

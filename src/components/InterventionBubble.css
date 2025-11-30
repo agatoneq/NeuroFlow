@@ -1,0 +1,31 @@
+.bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  max-width: 320px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 0 18px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+  z-index: 10000;
+}
+
+.bubble-green {
+  background: rgba(0, 200, 100, 0.9);
+}
+
+.bubble-orange {
+  background: rgba(255, 160, 0, 0.9);
+}
+
+.bubble-red {
+  background: rgba(255, 60, 60, 0.9);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

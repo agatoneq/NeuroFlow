@@ -154,7 +154,7 @@ function PomodoroTimer({ onComplete }) {
       </div>
 
       <div className="sessions-completed">
-        Sessions completed: {sessionsCompleted} 🍅
+        Sessions completed: {sessionsCompleted}
       </div>
     </div>
   );
