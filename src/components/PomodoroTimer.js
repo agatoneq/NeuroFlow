@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './PomodoroTimer.css';
 
-function PomodoroTimer({ onComplete }) {
+function PomodoroTimer({ onComplete, lockWhenDistracted, forceBreak }) {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -15,8 +15,8 @@ function PomodoroTimer({ onComplete }) {
   }), []);
 
   const playNotificationSound = useCallback(() => {
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYJGGS36+ehUBELTKXh8LJnHwhAnM/xxxwUDkKZ2fPCciYGLYDO8tmJNwgZaLvt559NEAxPpuPwtmMcBjiP1/PMeS4EI3fH8N+PPwkVXrTp66hVFApGnt/yvmwhBSuAzvLZiTYJGGS36+ehUBELTKXh8LJnHwg+nM/xxxwUDkGZ2fPCciYGLYDO8tmJNwgZZ7zt559NEAtOpePxtmIcBjiQ1/PMeS4EI3fH8N+PPwkVXrTp66hVFApGnt/yvmwhBSuAzvLZiTYJGGS36+ehUBELTKXh8LJnHwg+nM/xxxwUDkGZ2fPCciYGLYDO8tmJNwgZZ7zt559NEAtOpePxtmIcBjiQ1/PMeS4EI3fH8N+PPwkVXrTp66hVFApGnt/yvmwhBSuAzvLZiTYJGGS36+ehUBELTKXh8LJnHwg+nM/xxxwUDkGZ2fPCciYGLYDO8tmJNwgZZ7zt559NEAtOpePxtmIcBjiQ1/PMeS4EI3fH8N+PPwkVXrTp66hVFApGnt/yvmwhBSuAzvLZiTYJGGS36+ehUBELTKXh8LJnHwg+nM/xxxwUDkGZ2fPCciYGLYDO8tmJNwgZZ7zt55');
-    audio.play().catch(e => console.log('Cannot play sound'));
+    const audio = new Audio('/sounds/mixkit-software-interface-back-2575.wav');
+    audio.play().catch(() => {});
   }, []);
 
   const switchMode = useCallback((newMode) => {
@@ -30,21 +30,21 @@ function PomodoroTimer({ onComplete }) {
     const { ipcRenderer } = window.require('electron');
 
     if (mode === 'work') {
-      const newSessionsCompleted = sessionsCompleted + 1;
-      setSessionsCompleted(newSessionsCompleted);
+      const newSessions = sessionsCompleted + 1;
+      setSessionsCompleted(newSessions);
       if (onComplete) onComplete();
 
-      if (newSessionsCompleted % 4 === 0) {
+      if (newSessions % 4 === 0) {
         switchMode('longBreak');
         ipcRenderer.send('show-window', {
-          title: '🎉 Session complete!',
-          body: 'You finished 4 sessions. Time for a long break (15 min).'
+          title: 'Session complete!',
+          body: '4 sessions done. Long break (15 min).'
         });
       } else {
         switchMode('shortBreak');
         ipcRenderer.send('show-window', {
-          title: '✅ Session complete!',
-          body: 'Good job! Time for a short break (5 min).'
+          title: 'Session complete!',
+          body: 'Short break (5 min).'
         });
       }
 
@@ -52,8 +52,8 @@ function PomodoroTimer({ onComplete }) {
     } else {
       switchMode('work');
       ipcRenderer.send('show-window', {
-        title: '🔔 Break finished!',
-        body: 'Time to get back to work (25 min).'
+        title: 'Break finished!',
+        body: 'Time to work (25 min).'
       });
     }
   }, [mode, sessionsCompleted, onComplete, switchMode, playNotificationSound]);
@@ -61,7 +61,7 @@ function PomodoroTimer({ onComplete }) {
   useEffect(() => {
     let interval = null;
 
-    if (isActive) {
+    if (isActive && !forceBreak && !lockWhenDistracted) {
       interval = setInterval(() => {
         if (seconds === 0) {
           if (minutes === 0) {
@@ -76,10 +76,16 @@ function PomodoroTimer({ onComplete }) {
       }, 1000);
     }
 
-    return () => interval && clearInterval(interval);
-  }, [isActive, minutes, seconds, handleTimerComplete]);
+    if (forceBreak || lockWhenDistracted) {
+      setIsActive(false);
+    }
 
-  const toggleTimer = () => setIsActive(!isActive);
+    return () => interval && clearInterval(interval);
+  }, [isActive, minutes, seconds, handleTimerComplete, forceBreak, lockWhenDistracted]);
+
+  const toggleTimer = () => {
+    if (!forceBreak && !lockWhenDistracted) setIsActive(!isActive);
+  };
 
   const resetTimer = useCallback(() => {
     setIsActive(false);
@@ -94,25 +100,13 @@ function PomodoroTimer({ onComplete }) {
       <h2 className="card-title">⏱️ Pomodoro Timer</h2>
 
       <div className="mode-selector">
-        <button
-          className={`mode-btn ${mode === 'work' ? 'active' : ''}`}
-          onClick={() => !isActive && switchMode('work')}
-          disabled={isActive}
-        >
+        <button className={`mode-btn ${mode === 'work' ? 'active' : ''}`} onClick={() => !isActive && switchMode('work')} disabled={isActive}>
           Work
         </button>
-        <button
-          className={`mode-btn ${mode === 'shortBreak' ? 'active' : ''}`}
-          onClick={() => !isActive && switchMode('shortBreak')}
-          disabled={isActive}
-        >
+        <button className={`mode-btn ${mode === 'shortBreak' ? 'active' : ''}`} onClick={() => !isActive && switchMode('shortBreak')} disabled={isActive}>
           Short Break
         </button>
-        <button
-          className={`mode-btn ${mode === 'longBreak' ? 'active' : ''}`}
-          onClick={() => !isActive && switchMode('longBreak')}
-          disabled={isActive}
-        >
+        <button className={`mode-btn ${mode === 'longBreak' ? 'active' : ''}`} onClick={() => !isActive && switchMode('longBreak')} disabled={isActive}>
           Long Break
         </button>
       </div>
@@ -122,8 +116,7 @@ function PomodoroTimer({ onComplete }) {
           <circle className="progress-ring-circle-bg" cx="100" cy="100" r="93" />
           <circle
             className="progress-ring-circle"
-            cx="100"
-            cy="100"
+            cx="100" cy="100"
             r="93"
             style={{
               strokeDasharray: `${2 * Math.PI * 93}`,
@@ -141,21 +134,16 @@ function PomodoroTimer({ onComplete }) {
       </div>
 
       <div className="timer-controls">
-        <button
-          className={`btn ${isActive ? 'btn-danger' : 'btn-primary'}`}
-          onClick={toggleTimer}
-        >
+        <button className={`btn ${isActive ? 'btn-danger' : 'btn-primary'}`} onClick={toggleTimer} disabled={forceBreak || lockWhenDistracted}>
           {isActive ? '⏸ Pause' : '▶ Start'}
         </button>
 
-        <button className="btn btn-secondary" onClick={resetTimer}>
+        <button className="btn btn-secondary" onClick={resetTimer} disabled={forceBreak}>
           🔄 Reset
         </button>
       </div>
 
-      <div className="sessions-completed">
-        Sessions completed: {sessionsCompleted}
-      </div>
+      <div className="sessions-completed">Sessions completed: {sessionsCompleted}</div>
     </div>
   );
 }

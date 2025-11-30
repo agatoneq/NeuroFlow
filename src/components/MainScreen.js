@@ -4,10 +4,12 @@ import FocusBar from "./FocusBar";
 import PomodoroTimer from "./PomodoroTimer";
 import AmbientSounds from "./AmbientSounds";
 import MusicPlayerSpotify from "./MusicPlayerSpotify";
+import DeepIntervention from "./DeepIntervention";
 
 function MainScreen({ onRecalibrate }) {
-  const [brainData, setBrainData] = useState({ eeg: 1 });
+  const [brainData, setBrainData] = useState({ eeg: 1, counter: 0 });
   const [eyeState, setEyeState] = useState({ eye: 1 });
+  const [forceBreak, setForceBreak] = useState(false);
 
   const lastIntervention = useRef(0);
   const flip = useRef(0);
@@ -20,12 +22,8 @@ function MainScreen({ onRecalibrate }) {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/state", { cache: "no-store" })
         .then(res => res.json())
-        .then(data => {
-          console.log("EEG:", data);
-          setBrainData(data);
-        });
+        .then(data => setBrainData(data));
     }, 1500);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -33,12 +31,8 @@ function MainScreen({ onRecalibrate }) {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/state_eye", { cache: "no-store" })
         .then(res => res.json())
-        .then(data => {
-          console.log("EYE:", data);
-          setEyeState(data);
-        });
+        .then(data => setEyeState(data));
     }, 2000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -56,6 +50,10 @@ function MainScreen({ onRecalibrate }) {
       }
     }
   }, [eyeState]);
+
+  useEffect(() => {
+    if (brainData.counter === 1) setForceBreak(true);
+  }, [brainData]);
 
   const showNotification = (msg) => {
     if (Notification.permission === "granted") {
@@ -79,7 +77,10 @@ function MainScreen({ onRecalibrate }) {
       <div className="section-row">
         <div className="section">
           <h2>Pomodoro</h2>
-          <PomodoroTimer lockWhenDistracted={brainData.eeg === -1} />
+          <PomodoroTimer 
+            lockWhenDistracted={brainData.eeg === -1}
+            forceBreak={forceBreak}
+          />
         </div>
 
         <div className="section">
@@ -92,6 +93,8 @@ function MainScreen({ onRecalibrate }) {
           <MusicPlayerSpotify />
         </div>
       </div>
+
+      <DeepIntervention active={forceBreak} />
     </div>
   );
 }
