@@ -4,6 +4,7 @@ import FocusBar from "./FocusBar";
 import PomodoroTimer from "./PomodoroTimer";
 import AmbientSounds from "./AmbientSounds";
 import MusicPlayerSpotify from "./MusicPlayerSpotify";
+import ChronotypeDisplay from "./ChronotypeDisplay";
 import DeepIntervention from "./DeepIntervention";
 
 function MainScreen({ onRecalibrate }) {
@@ -75,12 +76,17 @@ function MainScreen({ onRecalibrate }) {
       </div>
 
       <div className="section-row">
-        <div className="section">
+        <div className="section half-width">
           <h2>Pomodoro</h2>
           <PomodoroTimer 
             lockWhenDistracted={brainData.eeg === -1}
             forceBreak={forceBreak}
           />
+        </div>
+
+        <div className="section half-width">
+          <h2>Chronotype</h2>
+          <ChronotypeDisplay />
         </div>
 
         <div className="section">
