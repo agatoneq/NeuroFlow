@@ -7,6 +7,7 @@ function DeepIntervention({ active }) {
 
   useEffect(() => {
     if (!active) return;
+
     let interval = setInterval(() => {
       setTimer(prev => {
         if (prev === 1) {
@@ -30,10 +31,10 @@ function DeepIntervention({ active }) {
     <div className="intervention-overlay">
       <div className="intervention-box">
 
-        <h1 className="intervention-title">Deep reset 🧘‍♀️</h1>
+        <h1 className="intervention-title">Deep Reset 🧘‍♀️</h1>
 
         <p className="intervention-text">
-          Oddychaj razem z kotem. To 60 sekund pełnego resetu.
+          Breathe along with the cat. This is a full 60-second reset for your nervous system.
         </p>
 
         <div className="cat-wrapper">
@@ -48,9 +49,9 @@ function DeepIntervention({ active }) {
         </div>
 
         <p className="breathing-phase">
-          {phase === "inhale" && "Wdech 4s"}
-          {phase === "hold" && "Zatrzymaj 4s"}
-          {phase === "exhale" && "Wydech 4s"}
+          {phase === "inhale" && "Inhale – 4s"}
+          {phase === "hold" && "Hold – 4s"}
+          {phase === "exhale" && "Exhale – 4s"}
         </p>
 
         <div className="breathing-progress">

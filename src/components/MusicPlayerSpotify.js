@@ -25,148 +25,106 @@ function MusicPlayer() {
 
   const loadPlaylist = useCallback(async (playlistId) => {
     if (!isAuthenticated) return;
-    
+
     setIsLoading(true);
     setError(null);
     try {
-      console.log('📥 Loading playlist:', playlistId);
       const playlistTracks = await spotifyService.getPlaylistTracks(playlistId.id);
-      console.log('✅ Playlist loaded:', playlistTracks.length, 'tracks');
       setTracks(playlistTracks);
       if (playlistTracks.length > 0) {
         setCurrentTrack(playlistTracks[0]);
       }
     } catch (error) {
-      console.error('❌ Error loading playlist:', error);
-      console.error('Error status:', error.status);
-      
-      // Obsługa błędów
       if (error.status === 404) {
-        setError('❌ Nie można załadować tracków (404). Użyj przycisku "▶️ Odtwórz bezpośrednio" zamiast tego!');
-        // NIE POKAZUJ alertu automatycznie - tylko ustaw error state
+        setError('❌ Cannot load tracks (404). Try "▶️ Play directly" instead.');
       } else if (error.status === 401) {
-        setError('Token wygasł. Zaloguj się ponownie.');
+        setError('Token expired. Please log in again.');
         spotifyService.logout();
         setIsAuthenticated(false);
       } else {
-        setError('Błąd ładowania playlisty: ' + (error.message || 'Nieznany błąd'));
+        setError('Playlist loading error: ' + (error.message || 'Unknown error'));
       }
     } finally {
       setIsLoading(false);
     }
   }, [isAuthenticated]);
 
-  // Odtwarzaj bezpośrednio przez URI - omija problem z 404 na tracklist
   const playPlaylistDirectly = useCallback(async () => {
     if (!isAuthenticated) return;
-    
+
     setIsLoading(true);
     setError(null);
     try {
       const playlist = playlists.find(p => p.id === selectedPlaylist);
       if (!playlist) return;
-      
-      console.log('🎵 Playing playlist directly via URI:', playlist.spotifyId.uri);
+
       await spotifyService.playContext(playlist.spotifyId.uri);
       setIsPlaying(true);
-      console.log('✅ Playlist started!');
+      setDeviceWarning(false);
     } catch (error) {
-      console.error('❌ Error playing playlist:', error);
-      
       if (error.status === 404) {
-        alert('⚠️ BRAK AKTYWNEGO URZĄDZENIA SPOTIFY\n\n' +
-              '1. Otwórz Spotify Desktop lub open.spotify.com\n' +
-              '2. Włącz dowolny utwór (nawet na chwilę)\n' +
-              '3. Wróć do NeuroFocus i spróbuj ponownie\n\n' +
-              'Spotify Web API wymaga aktywnego urządzenia.');
+        alert(
+          '⚠️ NO ACTIVE SPOTIFY DEVICE\n\n' +
+          '1. Open Spotify Desktop or open.spotify.com\n' +
+          '2. Play ANY track for 1 second\n' +
+          '3. Return here and try again\n\n' +
+          'Spotify Web API requires an active device.'
+        );
         setDeviceWarning(true);
       } else {
-        setError('Błąd odtwarzania: ' + (error.message || 'Nieznany błąd'));
+        setError('Playback error: ' + (error.message || 'Unknown error'));
       }
     } finally {
       setIsLoading(false);
     }
   }, [isAuthenticated, selectedPlaylist, playlists]);
 
-  // WYŁĄCZONE - nie ładuj playlist automatycznie przy zmianie dropdown
-  // Użytkownik musi kliknąć przycisk "Załaduj playlistę"
-  /*
-  useEffect(() => {
-    if (isAuthenticated) {
-      const playlist = playlists.find(p => p.id === selectedPlaylist);
-      if (playlist) {
-        loadPlaylist(playlist.spotifyId);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPlaylist, isAuthenticated, loadPlaylist]);
-  */
-
   useEffect(() => {
     if (isAuthenticated && volume >= 0) {
-      spotifyService.setVolume(volume).catch(err => 
-        console.log('Volume control requires active playback')
+      spotifyService.setVolume(volume).catch(() =>
+        console.log('Volume control requires active playback.')
       );
     }
   }, [volume, isAuthenticated]);
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
-    
-    // NIE ŁADUJ automatycznie playlisty - użytkownik wybierze sam
-    // Wiele playlist Spotify nie działa regionalnie (404)
   };
 
   const togglePlay = async () => {
-    console.log('🎵 Toggle play clicked');
-    console.log('Current track:', currentTrack);
-    console.log('Tracks length:', tracks.length);
-    console.log('Is authenticated:', isAuthenticated);
-    
     try {
       setError(null);
+
       if (isPlaying) {
-        console.log('🎵 Pausing...');
         await spotifyService.pause();
         setIsPlaying(false);
       } else {
-        console.log('🎵 Playing/Resuming...');
-        
-        // Jeśli mamy załadowaną playlistę, użyj jej
         if (currentTrack && tracks.length > 0) {
           const uris = tracks.map(t => t.uri);
           const currentIndex = tracks.findIndex(t => t.id === currentTrack.id);
-          console.log('URIs:', uris.length, 'Current index:', currentIndex);
-          
+
           await spotifyService.play({
             uris: uris,
             offset: { position: currentIndex }
           });
         } else {
-          // Jeśli nie ma playlisty, po prostu wznów to co gra w Spotify
-          console.log('No playlist loaded, resuming current playback...');
           await spotifyService.resume();
         }
-        
-        console.log('✅ Play command sent successfully');
+
         setIsPlaying(true);
         setDeviceWarning(false);
       }
     } catch (error) {
-      console.error('❌ Error toggling play:', error);
-      console.error('Error status:', error.status);
-      console.error('Error message:', error.message);
-      setError('Błąd odtwarzania');
+      setError('Playback error');
       setDeviceWarning(true);
-      
-      // Pokaż instrukcję tylko jeśli brak urządzenia
+
       if (error.status === 404) {
-        alert('⚠️ BRAK AKTYWNEGO URZĄDZENIA\n\n' +
-              '1. Otwórz aplikację Spotify Desktop LUB\n' +
-              '2. Otwórz Spotify Web Player (open.spotify.com)\n' +
-              '3. Włącz jakikolwiek utwór tam\n' +
-              '4. Wróć do NeuroFocus i spróbuj ponownie\n\n' +
-              'Spotify Web API wymaga aktywnego urządzenia do odtwarzania.');
+        alert(
+          '⚠️ NO ACTIVE SPOTIFY DEVICE\n\n' +
+          '1. Open Spotify Desktop or open.spotify.com\n' +
+          '2. Play any track\n' +
+          '3. Try again'
+        );
       }
     }
   };
@@ -174,30 +132,32 @@ function MusicPlayer() {
   const nextTrack = async () => {
     try {
       await spotifyService.skipToNext();
+
       setTimeout(async () => {
         const playback = await spotifyService.getCurrentPlayback();
-        if (playback && playback.item) {
+        if (playback?.item) {
           const newTrack = tracks.find(t => t.id === playback.item.id);
           if (newTrack) setCurrentTrack(newTrack);
         }
       }, 500);
     } catch (error) {
-      console.error('Error skipping to next:', error);
+      console.error('Error skipping next:', error);
     }
   };
 
   const previousTrack = async () => {
     try {
       await spotifyService.skipToPrevious();
+
       setTimeout(async () => {
         const playback = await spotifyService.getCurrentPlayback();
-        if (playback && playback.item) {
+        if (playback?.item) {
           const newTrack = tracks.find(t => t.id === playback.item.id);
           if (newTrack) setCurrentTrack(newTrack);
         }
       }, 500);
     } catch (error) {
-      console.error('Error skipping to previous:', error);
+      console.error('Error skipping previous:', error);
     }
   };
 
@@ -211,8 +171,7 @@ function MusicPlayer() {
       setCurrentTrack(track);
       setIsPlaying(true);
     } catch (error) {
-      console.error('Error playing track:', error);
-      alert('Upewnij się, że masz otwartą aplikację Spotify na swoim urządzeniu.');
+      alert('Make sure Spotify is open on your device.');
     }
   };
 
@@ -225,7 +184,7 @@ function MusicPlayer() {
   if (!isAuthenticated) {
     return (
       <div className="music-player card">
-        <h3 className="card-title">🎧 Odtwarzacz Muzyki</h3>
+        <h3 className="card-title">🎧 Music Player</h3>
         <SpotifyAuth onAuthSuccess={handleAuthSuccess} />
       </div>
     );
@@ -233,147 +192,84 @@ function MusicPlayer() {
 
   return (
     <div className="music-player card">
-      <h3 className="card-title">🎧 Odtwarzacz Muzyki Spotify</h3>
+      <h3 className="card-title">🎧 Spotify Music Player</h3>
 
       {error && (
-        <div style={{
-          background: 'rgba(255, 75, 43, 0.2)',
-          border: '1px solid #ff4b2b',
-          borderRadius: '8px',
-          padding: '10px',
-          marginBottom: '15px',
-          fontSize: '12px',
-          color: '#ff6b6b'
-        }}>
+        <div className="error-box">
           ⚠️ {error}
         </div>
       )}
 
       {deviceWarning && (
-        <div style={{
-          background: 'rgba(255, 152, 0, 0.2)',
-          border: '1px solid #ff9800',
-          borderRadius: '8px',
-          padding: '10px',
-          marginBottom: '15px',
-          fontSize: '12px',
-          color: '#ffa726'
-        }}>
-          ⚠️ <strong>Otwórz Spotify Desktop</strong> lub <strong>open.spotify.com</strong> i włącz dowolny utwór, aby aktywować urządzenie.
+        <div className="device-warning">
+          ⚠️ Open Spotify Desktop or open.spotify.com and play any track.
         </div>
       )}
 
-      {/* Informacja o playlistach 404 */}
-      <div style={{
-        background: 'rgba(33, 150, 243, 0.15)',
-        border: '1px solid #2196f3',
-        borderRadius: '8px',
-        padding: '12px',
-        marginBottom: '15px',
-        fontSize: '13px',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ marginBottom: '8px', fontWeight: 'bold', color: '#42a5f5' }}>
-          💡 Wiele playlist Spotify nie działa w Polsce (błąd 404)
-        </div>
-        <div style={{ color: '#90caf9', fontSize: '12px' }}>
-          <strong>Rozwiązanie:</strong><br/>
-          1. Otwórz Spotify Desktop<br/>
-          2. Włącz swoją ulubioną playlistę tam<br/>
-          3. Użyj przycisków poniżej do kontroli odtwarzania
-        </div>
+      <div className="info-box">
+        <strong>💡 Many Spotify playlists are region-locked (404 errors)</strong>
+        <br />
+        • Open Spotify Desktop  
+        <br />
+        • Start any playlist there  
+        <br />
+        • Use the controls below to manage playback  
       </div>
 
       <div className="playlist-selector">
-        <label>Wybierz playlistę:</label>
-        <select 
-          value={selectedPlaylist} 
+        <label>Select playlist:</label>
+        <select
+          value={selectedPlaylist}
           onChange={(e) => setSelectedPlaylist(e.target.value)}
           className="playlist-dropdown"
         >
-          {playlists.map(playlist => (
+          {playlists.map((playlist) => (
             <option key={playlist.id} value={playlist.id}>
               {playlist.name}
             </option>
           ))}
         </select>
-        
-        {/* NOWA OPCJA - Odtwarzaj bezpośrednio przez URI (OMIJA 404!) */}
-        <button 
+
+        <button
           onClick={playPlaylistDirectly}
           disabled={isLoading}
-          style={{
-            marginTop: '10px',
-            padding: '10px 16px',
-            background: 'linear-gradient(135deg, #1db954, #1ed760)',
-            border: 'none',
-            borderRadius: '20px',
-            color: 'white',
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            width: '100%',
-            fontSize: '14px',
-            boxShadow: '0 4px 12px rgba(29, 185, 84, 0.3)'
-          }}
+          className="btn-direct"
         >
-          {isLoading ? '⏳ Ładowanie...' : '▶️ Odtwórz bezpośrednio (BEZ 404!)'}
+          {isLoading ? '⏳ Loading...' : '▶️ Play directly (NO 404!)'}
         </button>
-        
-        {/* Stara opcja - ładowanie tracków (często 404) */}
-        <button 
+
+        <button
           onClick={() => {
-            const playlist = playlists.find(p => p.id === selectedPlaylist);
+            const playlist = playlists.find((p) => p.id === selectedPlaylist);
             if (playlist) loadPlaylist(playlist.spotifyId);
           }}
           disabled={isLoading}
-          style={{
-            marginTop: '8px',
-            padding: '8px 16px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '20px',
-            color: '#aaa',
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            fontWeight: 'normal',
-            width: '100%',
-            fontSize: '12px'
-          }}
+          className="btn-load"
         >
-          📥 Załaduj tracki (może być 404)
+          📥 Load tracks (may fail with 404)
         </button>
       </div>
 
-      {/* Proste przyciski sterujące - działają bez ładowania playlisty */}
-      <div style={{
-        marginTop: '20px',
-        padding: '15px',
-        background: 'rgba(29, 185, 84, 0.1)',
-        borderRadius: '8px',
-        border: '1px solid #1db954'
-      }}>
-        <div style={{ marginBottom: '10px', fontSize: '13px', color: '#1db954', fontWeight: 'bold' }}>
-          🎮 Sterowanie Spotify Desktop
-        </div>
+      <div className="player-controls-wrapper">
+        <div className="controls-title">🎮 Spotify Desktop Controls</div>
+
         <div className="player-controls">
-          <button className="control-btn" onClick={previousTrack} title="Poprzedni utwór">
-            ⏮️
-          </button>
-          <button className="control-btn control-btn-main" onClick={togglePlay} title={isPlaying ? 'Pauza' : 'Play'}>
+          <button className="control-btn" onClick={previousTrack}>⏮️</button>
+          <button className="control-btn control-btn-main" onClick={togglePlay}>
             {isPlaying ? '⏸️' : '▶️'}
           </button>
-          <button className="control-btn" onClick={nextTrack} title="Następny utwór">
-            ⏭️
-          </button>
+          <button className="control-btn" onClick={nextTrack}>⏭️</button>
         </div>
-        <div style={{ fontSize: '11px', color: '#90caf9', marginTop: '10px', textAlign: 'center' }}>
-          {currentTrack ? `Odtwarzanie: ${currentTrack.name}` : 'Steruj tym co gra w Spotify Desktop'}
+
+        <div className="control-caption">
+          {currentTrack ? `Now playing: ${currentTrack.name}` : 'Control your Spotify Desktop playback'}
         </div>
       </div>
 
       {isLoading ? (
         <div className="loading-state">
           <div className="loader"></div>
-          <p>Ładowanie playlisty...</p>
+          <p>Loading playlist...</p>
         </div>
       ) : currentTrack ? (
         <>
@@ -383,6 +279,7 @@ function MusicPlayer() {
                 🎵
               </div>
             </div>
+
             <div className="track-info">
               <div className="track-name">{currentTrack.name}</div>
               <div className="track-artist">{currentTrack.artist}</div>
@@ -390,16 +287,12 @@ function MusicPlayer() {
             </div>
           </div>
 
-          <div className="player-controls" style={{ marginTop: '15px' }}>
-            <button className="control-btn" onClick={previousTrack}>
-              ⏮️
-            </button>
+          <div className="player-controls">
+            <button className="control-btn" onClick={previousTrack}>⏮️</button>
             <button className="control-btn control-btn-main" onClick={togglePlay}>
               {isPlaying ? '⏸️' : '▶️'}
             </button>
-            <button className="control-btn" onClick={nextTrack}>
-              ⏭️
-            </button>
+            <button className="control-btn" onClick={nextTrack}>⏭️</button>
           </div>
 
           <div className="volume-control-main">
@@ -420,8 +313,9 @@ function MusicPlayer() {
 
           <div className="playlist">
             <div className="playlist-header">
-              Playlista ({tracks.length} utworów)
+              Playlist ({tracks.length} tracks)
             </div>
+
             <div className="playlist-tracks">
               {tracks.slice(0, 10).map((track) => (
                 <div
@@ -432,10 +326,12 @@ function MusicPlayer() {
                   <span className="track-number">
                     {tracks.indexOf(track) + 1}
                   </span>
+
                   <div className="track-details">
                     <div className="track-title">{track.name}</div>
                     <div className="track-subtitle">{track.artist}</div>
                   </div>
+
                   <span className="track-time">{formatDuration(track.duration)}</span>
                 </div>
               ))}
@@ -443,12 +339,12 @@ function MusicPlayer() {
           </div>
 
           <div className="spotify-notice">
-            💡 Upewnij się, że aplikacja Spotify jest otwarta na Twoim urządzeniu
+            💡 Make sure Spotify is open on your device
           </div>
         </>
       ) : (
         <div className="empty-state">
-          <p>Wybierz playlistę, aby rozpocząć odtwarzanie</p>
+          <p>Select a playlist to start playing</p>
         </div>
       )}
     </div>

@@ -76,18 +76,19 @@ function MainScreen({ onRecalibrate }) {
       </div>
 
       <div className="section-row">
-        <div className="section half-width">
-          <h2>Pomodoro</h2>
-          <PomodoroTimer 
-            lockWhenDistracted={brainData.eeg === -1}
-            forceBreak={forceBreak}
-          />
+        <div className="section">
+          <h2>Focus & Productivity</h2>
+
+          <ChronotypeDisplay />
+
+          <div className="pomodoro-wrapper">
+            <PomodoroTimer
+              lockWhenDistracted={brainData.eeg === -1}
+              forceBreak={forceBreak}
+            />
+          </div>
         </div>
 
-        <div className="section half-width">
-          <h2>Chronotype</h2>
-          <ChronotypeDisplay />
-        </div>
 
         <div className="section">
           <h2>Ambient Sounds</h2>

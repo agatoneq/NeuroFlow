@@ -1,23 +1,36 @@
-.chronotype-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+.chronotype-panel {
   width: 100%;
-  max-width: 200px;
-  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.chronotype-message {
-  font-size: 1rem;
-  font-weight: 600;
+.owl-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chrono-text {
+  text-align: left;
+  flex: 1;
+}
+
+.chrono-title {
+  font-size: 20px;
+  font-weight: 800;
   color: #00d4ff;
-  text-align: center;
-  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.chrono-desc,
+.chrono-hours {
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+  margin: 2px 0;
 }

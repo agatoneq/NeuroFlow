@@ -64,7 +64,16 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* NEW — Makes Pomodoro + Chronotype exactly half width */
-.half-width {
-  flex: 0.5 !important;
+/* full width area inside the Pomodoro section */
+.chronotype-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 12px 0;
+}
+
+.pomodoro-wrapper {
+  width: 100%;
 }
