@@ -1,22 +1,17 @@
 .chronotype-container {
   display: flex;
-  flex-direction: column; /* stack owl and message vertically */
-  align-items: center; /* center horizontally */
-  justify-content: center; /* center vertically if needed */
-  gap: 8px; /* small space between owl and message */
-  padding: 10px; /* reduce unnecessary padding */
-  background: rgba(255, 255, 255, 0.05); /* optional: matches your sections */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  width: 100%; /* will expand to parent container */
-  max-width: 200px; /* compact size */
+  width: 100%;
+  max-width: 200px;
   box-sizing: border-box;
-}
-
-.chronotype-owl {
-  width: 100px; /* smaller width for compact display */
-  height: auto;
 }
 
 .chronotype-message {
@@ -24,5 +19,5 @@
   font-weight: 600;
   color: #00d4ff;
   text-align: center;
-  line-height: 1.2; /* tighter spacing for compactness */
+  line-height: 1.2;
 }
