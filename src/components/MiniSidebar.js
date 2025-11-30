@@ -11,7 +11,7 @@ function MiniSidebar({ focusScore, pomodoroState, intervention }) {
 
   return (
     <div className="mini-sidebar">
-      <h3 className="mini-title">NeuroFocus</h3>
+      <h3 className="mini-title">NeuroFlow</h3>
 
       <div className="mini-section">
         <div className="mini-label">Focus</div>

@@ -41,7 +41,7 @@ function AmbientSoundsSpotify() {
           '⚠️ NO ACTIVE SPOTIFY DEVICE DETECTED\n\n' +
           '1. Open Spotify Desktop OR open.spotify.com\n' +
           '2. Play any song for a moment\n' +
-          '3. Return to NeuroFocus and try again\n\n' +
+          '3. Return to NeuroFlow and try again\n\n' +
           'Spotify Web API requires an active device to play audio.'
         );
       }

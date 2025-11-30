@@ -1,7 +1,7 @@
 {
   "name": "neurohackathon-focus-app",
   "version": "1.0.0",
-  "description": "Aplikacja wykrywająca błądzenie myśli z funkcjami pomocy w koncentracji",
+  "description": "An application detecting mind-wandering with real-time focus support features",
   "main": "public/electron.js",
   "homepage": "./",
   "scripts": {
@@ -17,7 +17,8 @@
     "electron",
     "react",
     "focus",
-    "pomodoro",
+    "mind-wandering",
+    "neurofeedback",
     "wellness",
     "concentration"
   ],
@@ -43,7 +44,7 @@
   },
   "build": {
     "appId": "com.neurohackathon.focusapp",
-    "productName": "NeuroFocus",
+    "productName": "NeuroFlow",
     "files": [
       "build/**/*",
       "public/electron.js",

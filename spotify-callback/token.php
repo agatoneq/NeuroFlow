@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 // Spotify Configuration
 $CLIENT_ID = '88fb4b331f304f33a835529c4c4792fa';
 $CLIENT_SECRET = '19189dea95ab412bba83a0c7e3b4841d'; // Trzeba dodać Client Secret z Spotify Dashboard
-$REDIRECT_URI = 'https://www.groupmta.com/neurofocus-callback/token.php';
+$REDIRECT_URI = 'https://www.groupmta.com/NeuroFlow-callback/token.php';
 
 // Sprawdź czy otrzymaliśmy authorization code
 if (isset($_GET['code'])) {
@@ -35,7 +35,7 @@ if (isset($_GET['code'])) {
         $expiresIn = $data['expires_in'];
         
         // Przekieruj z tokenem w URL (jak Implicit Grant)
-        $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+        $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
         $redirectUrl .= '#access_token=' . $accessToken;
         $redirectUrl .= '&expires_in=' . $expiresIn;
         $redirectUrl .= '&token_type=Bearer';
@@ -44,14 +44,14 @@ if (isset($_GET['code'])) {
         exit;
     } else {
         // Błąd - przekieruj z komunikatem
-        $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+        $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
         $redirectUrl .= '#error=token_exchange_failed';
         header('Location: ' . $redirectUrl);
         exit;
     }
 } else {
     // Brak code - przekieruj z błędem
-    $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+    $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
     $redirectUrl .= '#error=no_authorization_code';
     header('Location: ' . $redirectUrl);
     exit;
@@ -65,7 +65,7 @@ header('Content-Type: application/json');
 
 $CLIENT_ID = '88fb4b331f304f33a835529c4c4792fa';
 $CLIENT_SECRET = '19189dea95ab412bba83a0c7e3b4841d';
-$REDIRECT_URI = 'https://www.groupmta.com/neurofocus-callback/token.php';
+$REDIRECT_URI = 'https://www.groupmta.com/NeuroFlow-callback/token.php';
 
 if (isset($_GET['code'])) {
     $code = $_GET['code'];
@@ -90,7 +90,7 @@ if (isset($_GET['code'])) {
         $accessToken = $data['access_token'];
         $expiresIn = $data['expires_in'];
         
-        $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+        $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
         $redirectUrl .= '#access_token=' . $accessToken;
         $redirectUrl .= '&expires_in=' . $expiresIn;
         $redirectUrl .= '&token_type=Bearer';
@@ -98,13 +98,13 @@ if (isset($_GET['code'])) {
         header('Location: ' . $redirectUrl);
         exit;
     } else {
-        $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+        $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
         $redirectUrl .= '#error=token_exchange_failed';
         header('Location: ' . $redirectUrl);
         exit;
     }
 } else {
-    $redirectUrl = 'https://www.groupmta.com/neurofocus-callback/index.html';
+    $redirectUrl = 'https://www.groupmta.com/NeuroFlow-callback/index.html';
     $redirectUrl .= '#error=no_authorization_code';
     header('Location: ' . $redirectUrl);
     exit;

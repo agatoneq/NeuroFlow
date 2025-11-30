@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./MainScreen.css";
+
 import FocusBar from "./FocusBar";
 import PomodoroTimer from "./PomodoroTimer";
 import AmbientSounds from "./AmbientSounds";
@@ -19,53 +20,67 @@ function MainScreen({ onRecalibrate }) {
     Notification.requestPermission();
   }, []);
 
+  // EEG
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/state", { cache: "no-store" })
         .then(res => res.json())
-        .then(data => setBrainData(data));
-    }, 1500);
+        .then(data => setBrainData(data))
+        .catch(() => {});
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  // EYE
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/state_eye", { cache: "no-store" })
         .then(res => res.json())
-        .then(data => setEyeState(data));
-    }, 2000);
+        .then(data => setEyeState(data))
+        .catch(() => {});
+    }, 1200);
     return () => clearInterval(interval);
   }, []);
 
+  // MICRO INTERVENTIONS
   useEffect(() => {
     if (!eyeState) return;
+
     const now = Date.now();
     if (eyeState.eye === 0 && now - lastIntervention.current >= 5000) {
       lastIntervention.current = now;
+
       if (flip.current === 0) {
-        showNotification("Hey! Let's get back to the task 👀");
+        triggerMicroIntervention("Hey, let’s get back on track.");
         flip.current = 1;
       } else {
-        showNotification("You're drifting. Look at a distant object for 20 seconds.");
+        triggerMicroIntervention("You're drifting. Look at a distant object for 20 seconds.");
         flip.current = 0;
       }
     }
   }, [eyeState]);
 
+  // DEEP
   useEffect(() => {
-    if (brainData.counter === 1) setForceBreak(true);
+    if (brainData.counter === 1) {
+      setForceBreak(true);
+    }
   }, [brainData]);
 
-  const showNotification = (msg) => {
+  const triggerMicroIntervention = (msg) => {
     if (Notification.permission === "granted") {
-      new Notification("NeuroFocus", { body: msg });
+      new Notification("NeuroFlow", { body: msg, silent: false });
     } else {
       alert(msg);
     }
+
+    document.body.classList.add("shake");
+    setTimeout(() => document.body.classList.remove("shake"), 400);
   };
 
   return (
     <div className="main-screen">
+
       <button className="recalibrate-btn" onClick={onRecalibrate}>
         Recalibrate
       </button>
@@ -76,29 +91,36 @@ function MainScreen({ onRecalibrate }) {
       </div>
 
       <div className="section-row">
-        <div className="section">
-          <h2>Focus & Productivity</h2>
 
-          <ChronotypeDisplay />
+        {/* LEFT COLUMN */}
+        <div className="section half-width">
 
-          <div className="pomodoro-wrapper">
-            <PomodoroTimer
-              lockWhenDistracted={brainData.eeg === -1}
-              forceBreak={forceBreak}
-            />
+          {/* Chronotype */}
+          <div className="chronotype-mini-box">
+            <ChronotypeDisplay />
           </div>
+
+          <div style={{ height: "20px" }}></div>
+
+          {/* Pomodoro – title removed */}
+          <PomodoroTimer 
+            lockWhenDistracted={brainData.eeg === -1}
+            forceBreak={forceBreak}
+          />
         </div>
 
-
+        {/* Sounds */}
         <div className="section">
           <h2>Ambient Sounds</h2>
           <AmbientSounds />
         </div>
 
+        {/* Spotify */}
         <div className="section">
           <h2>Spotify Player</h2>
           <MusicPlayerSpotify />
         </div>
+
       </div>
 
       <DeepIntervention active={forceBreak} />

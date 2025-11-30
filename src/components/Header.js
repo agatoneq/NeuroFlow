@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header-left">
-        <h1 className="app-title">🧠 NeuroFocus</h1>
+        <h1 className="app-title">🧠 NeuroFlow</h1>
       </div>
     </header>
   );

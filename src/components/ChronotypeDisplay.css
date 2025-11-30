@@ -2,12 +2,12 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 20px;
-  padding: 14px 18px;
+  padding: 18px 22px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
 }
 
 .owl-box {
@@ -22,15 +22,20 @@
 }
 
 .chrono-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   color: #00d4ff;
+  margin-bottom: 6px;
+}
+
+.chrono-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
   margin-bottom: 4px;
 }
 
-.chrono-desc,
 .chrono-hours {
   font-size: 14px;
-  color: rgba(255,255,255,0.9);
-  margin: 2px 0;
+  color: rgba(0,212,255,0.9);
+  font-weight: 600;
 }

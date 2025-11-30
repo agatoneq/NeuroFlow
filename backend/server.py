@@ -11,7 +11,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE = r"E:\NeuroFocus"
+BASE = r"E:\NeuroFlow\backend\database"
 
 STATE_PATH = os.path.join(BASE, "state.json")
 STATE_EYE_PATH = os.path.join(BASE, "state_eye.json")

@@ -1,6 +1,6 @@
 export const SPOTIFY_CONFIG = {
   CLIENT_ID: process.env.REACT_APP_SPOTIFY_CLIENT_ID || '88fb4b331f304f33a835529c4c4792fa',
-  REDIRECT_URI: process.env.REACT_APP_SPOTIFY_REDIRECT_URI || 'https://www.groupmta.com/neurofocus-callback/token.php',
+  REDIRECT_URI: process.env.REACT_APP_SPOTIFY_REDIRECT_URI || 'https://www.groupmta.com/NeuroFlow-callback/token.php',
   SCOPES: [
     'streaming',
     'user-read-email',

@@ -5,7 +5,7 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 let tray;
 
-const PROTOCOL = 'neurofocus';
+const PROTOCOL = 'NeuroFlow';
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -41,7 +41,7 @@ function createWindow() {
       enableRemoteModule: true,
     },
     backgroundColor: '#1a1a2e',
-    title: 'NeuroFocus',
+    title: 'NeuroFlow',
     icon: path.join(__dirname, 'icon.png')
   });
 
@@ -55,7 +55,6 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-  // ⭐️ JEDYNA ZMIANA JAKĄ MUSIAŁAŚ MIEĆ ⭐️
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.executeJavaScript(`window.IS_ELECTRON = true;`);
   });
@@ -67,8 +66,8 @@ function createWindow() {
 
       if (Notification.isSupported()) {
         new Notification({
-          title: 'NeuroFocus',
-          body: 'Aplikacja działa w tle. Kliknij ikonę w zasobniku, aby przywrócić.',
+          title: 'NeuroFlow',
+          body: 'The app is running in the background. Click the tray icon to restore it.',
           icon: path.join(__dirname, 'icon.png')
         }).show();
       }
@@ -87,16 +86,16 @@ function createTray() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Pokaż aplikację',
+      label: 'Show App',
       click: () => mainWindow.show()
     },
     {
-      label: 'Pauza Pomodoro',
+      label: 'Pause Pomodoro',
       click: () => mainWindow.webContents.send('toggle-pomodoro')
     },
     { type: 'separator' },
     {
-      label: 'Wyjście',
+      label: 'Exit',
       click: () => {
         app.isQuitting = true;
         app.quit();
@@ -104,7 +103,7 @@ function createTray() {
     }
   ]);
 
-  tray.setToolTip('NeuroFocus - Kontrola koncentracji');
+  tray.setToolTip('NeuroFlow – Focus Monitoring');
   tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
@@ -142,8 +141,8 @@ ipcMain.on('show-window', (event, data) => {
 
     if (Notification.isSupported()) {
       new Notification({
-        title: data.title || 'NeuroFocus',
-        body: data.body || 'Timer zakończony!',
+        title: data.title || 'NeuroFlow',
+        body: data.body || 'Timer finished!',
         icon: path.join(__dirname, 'icon.png')
       }).show();
     }

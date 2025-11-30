@@ -36,7 +36,7 @@ function DesktopWidget() {
 
   return (
     <div className="widget">
-      <h3 className="widget-title">NeuroFocus</h3>
+      <h3 className="widget-title">NeuroFlow</h3>
 
       <div className="widget-section">
         <h4>Focus</h4>

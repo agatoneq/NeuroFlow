@@ -5,7 +5,7 @@ function StartScreen({ onStart }) {
   return (
     <div className="start-screen">
       <div className="start-card">
-        <h1 className="title">NeuroFocus</h1>
+        <h1 className="title">NeuroFlow</h1>
         <p className="subtitle">Prepare your EEG headset</p>
 
         <div className="instructions">
