@@ -7,6 +7,7 @@ function DeepIntervention({ active }) {
   return (
     <div className="intervention-overlay">
       <div className="intervention-box">
+
         <h1 className="intervention-title">
           You need a reset 🧘‍♀️
         </h1>
@@ -17,7 +18,7 @@ function DeepIntervention({ active }) {
 
         <div className="cat-wrapper">
           <video
-            src="../public/breathing_cat.mp4"
+            src="/breathing_cat.mp4"
             autoPlay
             loop
             muted
@@ -27,8 +28,9 @@ function DeepIntervention({ active }) {
         </div>
 
         <p className="breathing-guide">
-          Inhale 4s – Hold 4s – Exhale 4s  
+          Inhale 4s – Hold 4s – Exhale 4s
         </p>
+
       </div>
     </div>
   );
