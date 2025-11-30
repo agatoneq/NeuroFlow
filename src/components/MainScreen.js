@@ -4,6 +4,7 @@ import FocusBar from "./FocusBar";
 import PomodoroTimer from "./PomodoroTimer";
 import AmbientSounds from "./AmbientSounds";
 import MusicPlayerSpotify from "./MusicPlayerSpotify";
+import ChronotypeDisplay from "./ChronotypeDisplay";
 
 function MainScreen({ onRecalibrate }) {
   const [brainData, setBrainData] = useState({ eeg: 1 });
@@ -77,9 +78,14 @@ function MainScreen({ onRecalibrate }) {
       </div>
 
       <div className="section-row">
-        <div className="section">
+        <div className="section half-width">
           <h2>Pomodoro</h2>
           <PomodoroTimer lockWhenDistracted={brainData.eeg === -1} />
+        </div>
+
+        <div className="section half-width">
+          <h2>Chronotype</h2>
+          <ChronotypeDisplay />
         </div>
 
         <div className="section">
