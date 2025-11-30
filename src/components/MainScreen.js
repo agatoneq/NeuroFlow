@@ -18,15 +18,12 @@ function MainScreen({ onRecalibrate }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://localhost:3001/state.json?ts=" + Date.now(), {
-        cache: "no-store"
-      })
+      fetch("http://localhost:3001/state", { cache: "no-store" })
         .then(res => res.json())
         .then(data => {
-          console.log("FETCH EEG RAW:", data);
-          setBrainData({ ...data });   // wymusza re-render ALWAYS
-        })
-        .catch(() => {});
+          console.log("EEG:", data);
+          setBrainData(data);
+        });
     }, 1500);
 
     return () => clearInterval(interval);
@@ -34,14 +31,12 @@ function MainScreen({ onRecalibrate }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://localhost:3001/state_eye.json?ts=" + Date.now(), {
-        cache: "no-store"
-      })
+      fetch("http://localhost:3001/state_eye", { cache: "no-store" })
         .then(res => res.json())
         .then(data => {
-          setEyeState({ ...data }); // wymusza re-render ALWAYS
-        })
-        .catch(() => {});
+          console.log("EYE:", data);
+          setEyeState(data);
+        });
     }, 2000);
 
     return () => clearInterval(interval);
@@ -49,12 +44,9 @@ function MainScreen({ onRecalibrate }) {
 
   useEffect(() => {
     if (!eyeState) return;
-
     const now = Date.now();
-
     if (eyeState.eye === 0 && now - lastIntervention.current >= 5000) {
       lastIntervention.current = now;
-
       if (flip.current === 0) {
         showNotification("Hey! Let's get back to the task 👀");
         flip.current = 1;
